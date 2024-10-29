@@ -1,0 +1,15 @@
+# Full Setup for SDR++ in Server Mode (No Audio Config Required)
+
+This guide walks through setting up SDR++ in server mode on an Ubuntu Server. It includes creating a dedicated user, configuring the service to run automatically on startup, and omitting unnecessary audio configurations.
+
+1. **Install Minimal Dependencies**: Update your system and install essential tools. Skip audio-related dependencies, as they're not required for server mode. Run: `sudo apt update && sudo apt install -y alsa-utils`
+
+2. **Create a Dedicated SDR++ User**: Set up a secure, isolated user for SDR++ with appropriate permissions to access USB devices. Run: `sudo useradd -r -s /bin/false sdrpp && sudo mkdir /home/sdrpp && sudo chown -R sdrpp:sdrpp /home/sdrpp && sudo usermod -aG plugdev,dialout sdrpp`
+
+3. **Install SDR++**: Download the correct SDR++ package (e.g., `sdrpp_ubuntu_noble_amd64.deb`) and install it, then resolve any dependencies if needed. Run: `sudo dpkg -i sdrpp_ubuntu_noble_amd64.deb && sudo apt-get install -f`
+
+4. **Configure SDR++ as a Systemd Service**: Create a `systemd` service file to automatically start SDR++ in server mode on boot. Run: `sudo nano /etc/systemd/system/sdrpp-server.service` and add the following to the file: `[Unit] Description=SDR++ Server Mode After=network.target [Service] Type=simple User=sdrpp Group=sdrpp ExecStart=/usr/bin/sdrpp --server Restart=always Environment="HOME=/home/sdrpp" [Install] WantedBy=multi-user.target`
+
+5. **Enable and Start the SDR++ Service**: Enable and start the SDR++ service, and confirm it’s running. Run: `sudo systemctl daemon-reload && sudo systemctl enable sdrpp-server.service && sudo systemctl start sdrpp-server.service && sudo systemctl status sdrpp-server.service`
+
+With these steps, SDR++ should be successfully running in server mode, set to launch on boot.
