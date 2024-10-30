@@ -1,4 +1,6 @@
-Step-by-Step Configuration and Setup
+SDR++ Server Setup and Configuration Guide
+This guide covers the setup of SDR++ as a server, configuring necessary dependencies, creating a configuration file, and managing plugins.
+
 1. Install Required Dependencies
 Install all necessary libraries and tools required to build and run SDR++ and RTL-SDR.
 
@@ -9,6 +11,8 @@ sudo apt install -y cmake build-essential libfftw3-dev libusb-1.0-0-dev \
 libasound2-dev libpulse-dev libglfw3-dev libportaudio2 librtlsdr-dev \
 libvolk2-dev git dos2unix
 2. Clone and Build SDR++ from Source
+Clone the repository and build SDR++:
+
 bash
 Copy code
 git clone https://github.com/AlexandreRouma/SDRPlusPlus.git
@@ -19,19 +23,19 @@ cmake ..
 make -j$(nproc)
 sudo make install
 sudo ldconfig
-Verify the installation with:
+Verify the installation:
 
 bash
 Copy code
 sdrpp --version
 3. Configuration File Setup
-Create the SDR++ config file in the SDR++ user's home directory. This config enables only the RTL-SDR Source and RTL-TCP Source, with network discovery configured at the end of the file.
+Create the SDR++ config file in the SDR++ user’s home directory:
 
 bash
 Copy code
 mkdir -p /home/sdrpp/.config/sdrpp
 nano /home/sdrpp/.config/sdrpp/config.json
-Copy and paste the following content into config.json:
+Copy and paste the following configuration into config.json:
 
 json
 Copy code
@@ -150,7 +154,7 @@ Copy code
     }
 }
 4. Disable Unused Plugins
-Disable all other plugins by renaming them with a .disabled extension in the /usr/lib/sdrpp/plugins/ directory.
+Disable all plugins except rtl_sdr_source.so and rtl_tcp_source.so by renaming them with a .disabled extension.
 
 bash
 Copy code
@@ -218,8 +222,8 @@ bash
 Copy code
 sudo systemctl status sdrpp.service
 6. Troubleshoot Common Issues
-RtApiPulse Connection Refused: If PulseAudio errors appear, ensure SDL_AUDIODRIVER is set to dummy in the environment variable to avoid audio requirements on the server.
-Underflow Errors: Adjust the sample rate or bandwidth in the client settings if you're seeing buffer underflows.
+PulseAudio Connection Refused: Ensure SDL_AUDIODRIVER is set to dummy to avoid audio requirements on the server.
+Buffer Underflows: Adjust the sample rate or bandwidth settings in the client if you see buffer underflows.
 Invalid Command Errors: These may result from unsupported commands but are usually harmless.
 7. Verify and Test
 Connect with SDR++ Client: Open SDR++ on a client machine, connect to the server IP (e.g., 192.168.1.148) on port 5259.
@@ -229,10 +233,4 @@ Monitor Logs: Keep an eye on logs for errors or unexpected issues:
 bash
 Copy code
 sudo journalctl -u sdrpp.service -f
-This setup should ensure SDR++ operates effectively as a server with only the RTL-SDR and RTL-TCP plugins enabled. Let me know if any further adjustments are needed.
-
-
-
-
-
-
+This setup should enable SDR++ to run effectively as a server with only the RTL-SDR and RTL-TCP plugins active. Let me know if any further adjustments are needed.
