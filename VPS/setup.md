@@ -20,7 +20,7 @@
 - sudo ufw status verbose
 
 ## make sure you can still connect to your VPS as a non-root user
-<p style="color: red; font-weight: bold;">Important: leave the original ssh session open!</p>
+⚠️ Important: leave the original ssh session open!
 - start a new session and log in using your credentials on port 22
 - if succesful, then continue
 
@@ -64,7 +64,7 @@ for the name, I usually use the name of the machine I will be connecting from so
 
 ## test the key pair
 ### make sure you can connect to your VPS with the new SSH settings, key pair, and non-root user
-- as before, leave the original ssh session open
+⚠️ Important: leave the original ssh session open!
 - start a new session and log in using your name@ip:\<new_port\>
 - if succesful, then continue
 
