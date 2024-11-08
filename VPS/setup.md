@@ -20,7 +20,7 @@
 - sudo ufw status verbose
 
 ## make sure you can still connect to your VPS as a non-root user
-- leave the original ssh session open
+<p style="color: red; font-weight: bold;">Important: leave the original ssh session open!</p>
 - start a new session and log in using your credentials on port 22
 - if succesful, then continue
 
