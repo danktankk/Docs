@@ -282,8 +282,8 @@ continuing on now...
 
 This is updated above and only here to show what it used to be:
 ```
-*~Add Go 1.19 to PATH for the next operations~*
-*~export PATH="/usr/lib/go-1.19/bin:$PATH"~*
+> *~Add Go 1.19 to PATH for the next operations~*
+> *~export PATH="/usr/lib/go-1.19/bin:$PATH"~*
 ```
 ```
 # Clone the git repo, move to it, and checkout the latest release (as of this writing, 0.24.2, but check Github)
