@@ -284,24 +284,32 @@ This is updated above and only here to show what it used to be:
 > *~Add Go 1.19 to PATH for the next operations~*<br>
 > *~export PATH="/usr/lib/go-1.19/bin:$PATH"~*
 
-```
-# Clone the git repo, move to it, and checkout the latest release (as of this writing, 0.24.2, but check Github)
+Clone the git repo, move to it, and checkout the latest release (as of this writing, 0.24.2, but check Github)
+```bash
 cd /root
 git clone https://github.com/smallstep/certificates.git
 cd certificates
 git checkout v0.28.1  # [Dec 2024]
-
-# Build process
-# Once you execute these, go get a coffee and come back, or maybe drive to get a snack, it'll be awhile
+```
+Build process
+Once you execute these, go get a coffee and come back, or maybe drive to get a snack, it'll be awhile
+```bash
 make bootstrap
-# I know this sounds odd but I promise 'install' also does 'build', since it depends on the binary
-# GOFLAGS are clear so it does a CGO build, which is required for Yubikey support
+```
+I know this sounds odd but I promise 'install' also does 'build', since it depends on the binary
+GOFLAGS are clear so it does a CGO build, which is required for Yubikey support
+```bash
 make install GOFLAGS=""
-
+```
 # This tells the kernel that step-ca can bind to service ports
+```bash
 setcap CAP_NET_BIND_SERVICE=+eip /usr/bin/step-ca
 ```
-Now check version: step version and step-ca version to make sure they both run. `step-ca` should show a release time/date of now the time you actually built it, which should be now() but in UTC and not your local timezone.
+Now check version: step version and step-ca version to make sure they both run. 
+```bash
+step-ca
+```
+This should show a release time/date of now the time you actually built it, which should be now() but in UTC and not your local timezone.
 
 ### Setup Step-CA
 
