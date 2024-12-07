@@ -262,20 +262,27 @@ apt update
 # And Git, so we can clone stuff
 # And also some other packages we need to compile Smallstep
 apt install git libpcsclite-dev gcc make pkg-config curl -y
-
-## This part is updated to Dec 2024 so you will need this version of go
-wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz
-then do the following to get it installed:
 ```
+This part is updated to Dec 2024 so you will need this version of go
+```bash
+wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz
+```
+
+then do the following to get it installed:
+
+```bash
 sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz
 export PATH="/usr/lib/go-1.22/bin:$PATH"
-verify install: go version
 ```
-# continuing on now...
+verify install
+```bash
+go version
 ```
+continuing on now...
+
 This is updated above and only here to show what it used to be:
-~~Add Go 1.19 to PATH for the next operations~~
-~~export PATH="/usr/lib/go-1.19/bin:$PATH"~~
+*~Add Go 1.19 to PATH for the next operations~*
+*~export PATH="/usr/lib/go-1.19/bin:$PATH"~*
 ```
 # Clone the git repo, move to it, and checkout the latest release (as of this writing, 0.24.2, but check Github)
 cd /root
