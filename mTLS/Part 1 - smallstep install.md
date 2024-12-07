@@ -281,7 +281,7 @@ go version
 continuing on now...
 
 This is updated above and only here to show what it used to be:
-> *~Add Go 1.19 to PATH for the next operations~*
+> *~Add Go 1.19 to PATH for the next operations~*<br>
 > *~export PATH="/usr/lib/go-1.19/bin:$PATH"~*
 
 ```
