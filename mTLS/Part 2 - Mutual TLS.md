@@ -23,7 +23,7 @@ This is a simpler solution than using a VPN to ’expose’ your services, as lo
 
 ## Video
 
-[![Mutual TLS Guide - Secure Your Homelab Services](https://img.youtube.com/vi/qfF0xH5N2nM/0.jpg)](https://www.youtube.com/watch?v=qfF0xH5N2nM)
+[![Mutual TLS Guide - Secure Your Homelab Services](https://img.youtube.com/vi/YhuWay9XJyw/0.jpg)](https://www.youtube.com/watch?v=YhuWay9XJyw)
 
 ---
 
