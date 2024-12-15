@@ -1,3 +1,5 @@
+## Source:  https://www.apalrd.net/posts/2024/network_mtls/
+
 # Securely Expose Your Homelab Services with Mutual TLS
 
 ## Published: 2024-11-22
@@ -7,17 +9,6 @@
 Today I’m diving into Mutual TLS to securely expose my homelab services! TLS is already ubiquitous in the modern era, providing strong symmetric encryption, perfect forward secrecy, and a public chain of trust to authenticate the server. But, it also has a lesser-known ability to authenticate the client. By creating our own certificate authority to issue certs to clients, we can securely authenticate them to the server, preventing other users from even hitting our web app and probing it for vulnerabilities.
 
 This is a simpler solution than using a VPN to ’expose’ your services, as long as the app is already relying on TLS (which includes more protocols than just HTTPS). There’s less user friction in installing a `.p12` cert than setting up a VPN client, which could be important if you are sharing your services with friends and family.
-
----
-
-## Contents
-
-1. [Video](#video)
-2. [Create a Simple Root CA](#create-a-simple-root-ca)
-3. [Sign a User Cert using the Root CA](#sign-a-user-cert-using-the-root-ca)
-4. [Sign a User Cert using Smallstep](#sign-a-user-cert-using-smallstep)
-5. [Setup Caddy for Client Auth](#setup-caddy-for-client-auth)
-6. [Setup Nginx for Client Auth](#setup-nginx-for-client-auth)
 
 ---
 
@@ -37,7 +28,13 @@ I’m also using an ECDSA key chain, more to see how the process compares to RSA
 # Generate private key using secp384r1:
 openssl ecparam -name secp384r1 -genkey -out root.key
 
-# Sign the root certificate
+#Sign the root certificate
+#Pathlen:0 means there can be only one more cert below this CA (no more CAs)
+#Make sure you update the subj name with your own names
+#C=US is also the country, it's optional
+#O= is the organization, also optional
+#CN= is the Common Name and it's required
+#I also set validity to 4 years, make sure you watch for expiration (manually)
 openssl req -new -key root.key -x509 -nodes -days 1461 -out root.pem -subj "/C=US/O=apalrd.net/CN=test" -addext "basicConstraints=critical,CA:TRUE,pathlen:0"
 
 # View the certificate (optional)
@@ -48,23 +45,30 @@ openssl x509 -in root.pem -text -noout
 
 ## Sign a User Cert using the Root CA
 
-Now we can use OpenSSL to generate and sign a user cert using the root key. I chose `secp256r1` for this since it has a smaller ‘blast radius’ than the root and still provides roughly equivalent security to RSA 3072.
+Now we can use OpenSSL to generate and sign a user cert using the root key. I chose `secp256` for this since it has a smaller ‘blast radius’ than the root and still provides roughly equivalent security to RSA 3072.
 
 ```bash
-# Generate secp256r1 key for this client
+# Generate secp256 key for this client
 openssl ecparam -name prime256v1 -genkey -out adventure@apalrd.net.key
 
-# Generate a CSR (certificate signing request) for the new key
+#Generate a CSR (certificate signing request) for my new key
+#again, C and O are optional, CN is the Common Name of the cert
 openssl req -new -key adventure@apalrd.net.key -out adventure@apalrd.net.csr -subj "/C=US/O=apalrd.net/CN=adventure@apalrd.net" -addext "extendedKeyUsage = clientAuth"
 
-# Sign the CSR using the root
+#Sign the CSR using the root
+#Sign it allowing for server and client auth as the key usage
 openssl x509 -req -in adventure@apalrd.net.csr -CA root.pem -CAkey root.key -CAcreateserial -out adventure@apalrd.net.crt -days 365 -sha256 -copy_extensions=copyall
 
-# Package it into a P12 archive
+#Now you can view it (for fun)
+openssl x509 -in adventure@apalrd.net.crt -text -noout
+
+#Now let's package it into a P12 archive so you can send it to your favorite client device
+#You *must* enter a password here or some OSes will not accept the P12
+#The password just encrypts the P12 file itself
 openssl pkcs12 -export -out adventure@apalrd.net.p12 -in adventure@apalrd.net.crt -inkey adventure@apalrd.net.key
 ```
 
-> **Note**: Some OSes require a password for the P12 archive.
+> ** Important note**: I know it’s tempting to try to use Bernsein’s curves (ed25519 especially), but they aren’t approved by the CA + Browser Forum for use in public CAs, and aren’t implemented in any major web browser. So, I’ve chosen scep256 (which OpenSSL confusingly calls prime256) and scep384 for my CA. Of course, RSA is always an option as well.
 
 ---
 
@@ -73,18 +77,157 @@ openssl pkcs12 -export -out adventure@apalrd.net.p12 -in adventure@apalrd.net.cr
 If you’ve already set up a Smallstep CA from my previous TLS videos, you can use that instead of OpenSSL:
 
 ```bash
-# Sign cert (run as root on the CA)
+#Sign cert (run as root on the CA)
+#laptop.crt/laptop.key are the key files
+#I signed this one for a long ass time
 step ca certificate adventure@apalrd.net laptop.crt laptop.key --not-after=2160h
 
-# Bundle into p12 and include intermediate cert
+#Bundle into p12 and include intermediate cert we are using
+#The P12 file can be imported into any OS
 step certificate p12 laptop.p12 laptop.crt laptop.key --ca /etc/step/certs/intermediate_ca.crt
 ```
 
 ---
+## Set up Traefik for Client Auth
 
+```config.yml
+#I use one file for my Routers, Services, and Middleware.
+#Unless I apply it to all domains, they go in this file.
+#An example of something I use for everything would be crowdsec.
+#That would be added in the traefik.yml file as that is a place you can set middleware globally.
+#This generally is not what I would want, but there are exceptions as noted.
+
+#There is not much to the setup here, fortunately.
+#Add the following in config.yml.
+#I just put mine at the top since yaml doesnt really care where things go as long as its formatted properly
+#You could probably also add it somewhere in traefik.yml after `entrypoints` but this works so I am leaving it here 
+
+tls:
+  options:
+    acmeClient:
+      clientAuth:
+        caFiles:
+          - "/certs/cert1.crt"
+          - "/certs/cert2.crt"
+          - "/certs/cert3.crt"
+        clientAuthType: RequireAndVerifyClientCert
+
+#This section above will terminate LOCAL mTLS --per router set for it-- 
+#Here is an example router config to work with the TLS section above
+
+http:
+  routers:
+    testapp:
+      entryPoints:
+        - https
+      middlewares:
+        - middleware1
+        - middleware2
+      rule: Host(`foo.domain.com`)
+      service: testapp
+      tls:
+        options: acmeClient
+
+#Notice `options: acmeClient` in `https.router.testapp.tls.options` matches the heading at `tls.options.acmeClient`
+
+#The service does not change and it will terminate using your mTLS cert that you have in your traefik configuration directory.  (I.E ~/docker/traefik/certs/cert1.crt)
+#I also added the cert1.key here in this directory as well.  The cert1.key is not added in the tls block above
+#Next the services portion, again, it stays the same
+#I added just to be thorough
+
+  services:
+    testapp:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: http://192.168.0.2:1234
+```
+## Set up Traefik for Client Auth and Cloudflare
+
+This was not as easy and required some help from `Xionous`.
+Super knowledgeable individual and equally as helpful.  Many thanks again!
+
+This set up is only a little different and involves config on Cloudflares Dash.
+Read this carefully as there are different certs that are responsible for different thing.
+You will go to your domains dashboard and then go to `SSL/TLS>Client Certificates`
+1. add your sub-domains so that mTLS is enforced.
+![image](https://github.com/user-attachments/assets/716dc703-f362-4d0d-b14c-e455f998223f)
+In my case, I did *.domain.com & domain.com to cover all subdomains made.
+
+2. Create a client cert.  
+Copy the `.crt` and `.key` file contents to a file on your machine.
+Put them in the same certs folder as you local certs made with Step-CA
+Name them appropriately (i.e. `cf.crt` / `cf.key`) so they are clearly different than your local cert names.
+Go back and save your client cert on Cloudflare now. 
+
+3. Then go to `Security>WAF>custom rules` and look for the mTLS template.
+![image](https://github.com/user-attachments/assets/bc86ec68-25c3-4f6b-9791-526a6b2d9f38)
+Open that and then set it up to block any traffic that doesnt have the proper client-side cert.
+It should be noted that this is VERY effective.  Not all browsers will work, especially on phones.
+I have found most chrome based, not all, work once the cert are added.
+
+Set up your firewall rule.  Here is an example that work for all subdomains setup in DNS rules.
+![image](https://github.com/user-attachments/assets/a65ffa3b-431c-4c30-a1b9-098564061c36)
+
+I just added one DNS CNAME after my WAN IP.  `*.domain.com`
+This way ALL sub-domains are covered with this one rule.
+
+That should be it for cloudflare.
+
+Note:  You can also go further and add an `IDP` in `Cloudflare Access` to make it so that only those individuals you
+authorize are able to log into the application or service.  I wont be covering that here.  Maybe later.
+
+5. Back to Traefik:
+```config.yml
+#Adding Cloudflare in `config.yml is much easier now, however the way I set it up, it uses a second domain.
+#I will differentiate it by calling it domain2.com
+#Remember that domain.com is for local mTLS connections and the setup for that is above
+#Here is the additional setup for config.yml also including the LOCAL mTLS setup
+
+http:
+  routers:
+    testapp:  ## local mTLS router
+      entryPoints:
+        - https
+      middlewares:
+        - middleware1
+        - middleware2
+      rule: Host(`foo.domain.com`)
+      service: testapp
+      tls:
+        options: acmeClient
+    testapp-cf:  ## Cloudflare external mTLS router
+      entryPoints:
+        - https
+      middlewares:
+        - middleware1
+        - middleware2
+      rule: Host(`foo.domain2.com`)
+      service: testapp-cf
+      tls: {}
+
+  services:
+    testapp:  ## local mTLS service
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: http://192.168.0.2:1234
+    testapp-cf:  ## ## Cloudflare external service
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: http://192.168.0.2:1234
+```
+This provides the best of both worls as you can have a very secure internal network.  
+Anyone that doesnt have athe proper client-cert will not be able to login to your applications.
+They wont even be able to see the application login page!
+
+Externally, for API's that need to be exposed, you now have Cloudflare client side mTLS set up!
+```
+---
 ## Setup Caddy for Client Auth
 
-Here’s the Caddyfile I used:
+Here’s the Caddyfile I used (Debian packs a start page with Caddy):
 
 ```caddyfile
 {
@@ -135,7 +278,7 @@ test1.apalrd.net {
 
 ## Setup Nginx for Client Auth
 
-Here’s a full nginx configuration with client auth:
+Here’s a full nginx configuration (`/etc/nginx/nginx.conf`) with client auth. The default Debian config is quite .. verbose .. so I’ve cut out a lot of things which I didn’t need, but you might have needed them. Anyway, it’s framework. Nginx on Debian also subscribes to the whole `sites-available` and `sites-enabled` thing, which I find unnecessary.
 
 ```nginx
 user www-data;
