@@ -1,8 +1,16 @@
 ## Source:  https://www.apalrd.net/posts/2024/network_mtls/
 
-# Securely Expose Your Homelab Services with Mutual TLS
+## Securely Expose Your Homelab Services with Mutual TLS
 
-## Published: 2024-11-22
+### Published: 2024-11-22
+
+---
+### If you set up SmallStep, then skip to:  [Sign a User Cert using Smallstep]
+#### If you didnt set up smallStep, first, shame on you!
+#### Second, you can just follow this excellent guide instead and skip the smallstep section lol
+#### There wasnt a traefik or cloudflare section, so I had to kind of invert that along the way.
+#### Enjoy!
+---
 
 **Tags**: #networking #security
 
@@ -91,16 +99,18 @@ step certificate p12 laptop.p12 laptop.crt laptop.key --ca /etc/step/certs/inter
 ## Set up Traefik for Client Auth
 
 ```config.yml
-#I use one file for my Routers, Services, and Middleware.
-#Unless I apply it to all domains, they go in this file.
-#An example of something I use for everything would be crowdsec.
-#That would be added in the traefik.yml file as that is a place you can set middleware globally.
-#This generally is not what I would want, but there are exceptions as noted.
-
-#There is not much to the setup here, fortunately.
-#Add the following in config.yml.
-#I just put mine at the top since yaml doesnt really care where things go as long as its formatted properly
-#You could probably also add it somewhere in traefik.yml after `entrypoints` but this works so I am leaving it here 
+## 
+# I use one file for my Routers, Services, and Middleware.
+# Unless I apply middleware to all domains, they go in this file.
+# An example of something I use for everything would be crowdsec middleware.
+# That would be added in the traefik.yml file as that is a place you can set middleware globally.
+# This generally is not what I would want, but there are exceptions as noted.
+#
+# There is not much to the setup here, fortunately.
+# Add the following in config.yml.
+# I just put mine at the top since yaml doesnt really care where things go as long as its formatted properly
+# You could probably also add it somewhere in traefik.yml after `entrypoints` but this works so I am leaving it here 
+##
 
 tls:
   options:
@@ -112,8 +122,10 @@ tls:
           - "/certs/cert3.crt"
         clientAuthType: RequireAndVerifyClientCert
 
-#This section above will terminate LOCAL mTLS --per router set for it-- 
-#Here is an example router config to work with the TLS section above
+##
+# This section above will terminate LOCAL mTLS --per router set for it-- 
+# Here is an example router config to work with the TLS section above
+##
 
 http:
   routers:
@@ -127,13 +139,15 @@ http:
       service: testapp
       tls:
         options: acmeClient
-
-#Notice `options: acmeClient` in `https.router.testapp.tls.options` matches the heading at `tls.options.acmeClient`
-
-#The service does not change and it will terminate using your mTLS cert that you have in your traefik configuration directory.  (I.E ~/docker/traefik/certs/cert1.crt)
-#I also added the cert1.key here in this directory as well.  The cert1.key is not added in the tls block above
-#Next the services portion, again, it stays the same
-#I added just to be thorough
+##
+# Notice `options: acmeClient` in `https.router.testapp.tls.options` matches the heading at `tls.options.acmeClient`
+#
+# Next is the service block.  The service does not change and it will terminate using your mTLS cert
+# that you have in your traefik configuration directory.  (I.E ~/docker/traefik/certs/cert1.crt)
+# I also added the cert1.key here in this directory as well.  The cert1.key is not added in the tls block above
+# Next the services portion, again, it stays the same
+# I added just to be thorough
+##
 
   services:
     testapp:
@@ -142,21 +156,22 @@ http:
         servers:
           - url: http://192.168.0.2:1234
 ```
-## Set up Traefik for Client Auth and Cloudflare
+## Set up Traefik for Client Auth & Cloudflare
 
-This was not as easy and required some help from `Xionous`.
-Super knowledgeable individual and equally as helpful.  Many thanks again!
+This was not as easy and required some help from `Xionous` - actually in several areas.
+A super knowledgeable individual and equally as helpful.  Many thanks Xionous!
 
-This set up is only a little different and involves config on Cloudflares Dash.
-Read this carefully as there are different certs that are responsible for different thing.
-You will go to your domains dashboard and then go to `SSL/TLS>Client Certificates`
-1. add your sub-domains so that mTLS is enforced.
+This set up is only a little different and involves some configuration on Cloudflare's dashboard for your domain.
+Read this carefully as there are different certs that are responsible for different things.
+It is also important to note this will need a separate domain from the first one we used.
+Go to your domains dashboard and then go to `SSL/TLS>Client Certificates`
+1. add your sub-domains so that mTLS is enforced or add a wild-card as I have done.
 ![image](https://github.com/user-attachments/assets/716dc703-f362-4d0d-b14c-e455f998223f)
-In my case, I did *.domain.com & domain.com to cover all subdomains made.
+In my case, *.domain.com & domain.com will cover all subdomains made in the future as well.
 
 2. Create a client cert.  
 Copy the `.crt` and `.key` file contents to a file on your machine.
-Put them in the same certs folder as you local certs made with Step-CA
+Put them in the same certs directory as your local certs made with Step-CA
 Name them appropriately (i.e. `cf.crt` / `cf.key`) so they are clearly different than your local cert names.
 Go back and save your client cert on Cloudflare now. 
 
@@ -164,25 +179,27 @@ Go back and save your client cert on Cloudflare now.
 ![image](https://github.com/user-attachments/assets/bc86ec68-25c3-4f6b-9791-526a6b2d9f38)
 Open that and then set it up to block any traffic that doesnt have the proper client-side cert.
 It should be noted that this is VERY effective.  Not all browsers will work, especially on phones.
-I have found most chrome based, not all, work once the cert are added.
+I have found most chrome based, not all, work once the certs are added.
 
 Set up your firewall rule.  Here is an example that work for all subdomains setup in DNS rules.
 ![image](https://github.com/user-attachments/assets/a65ffa3b-431c-4c30-a1b9-098564061c36)
 
-I just added one DNS CNAME after my WAN IP.  `*.domain.com`
+I just added one DNS CNAME after my WAN IP.  `domain.com`
 This way ALL sub-domains are covered with this one rule.
 
-That should be it for cloudflare.
+That should be it for Cloudflare.
 
-Note:  You can also go further and add an `IDP` in `Cloudflare Access` to make it so that only those individuals you
-authorize are able to log into the application or service.  I wont be covering that here.  Maybe later.
+Note:  You can also go further and add an `IDP` in `Cloudflare Access` and sets up apps as well.
+This will make it so that only those individuals you authorize are able to log into the application 
+or service.  I wont be covering that here though.  Maybe later.
 
 5. Back to Traefik:
 ```config.yml
-#Adding Cloudflare in `config.yml is much easier now, however the way I set it up, it uses a second domain.
-#I will differentiate it by calling it domain2.com
-#Remember that domain.com is for local mTLS connections and the setup for that is above
-#Here is the additional setup for config.yml also including the LOCAL mTLS setup
+##
+# Adding Cloudflare in `config.yml is much easier now, however the way I set it up, it uses a second domain as mentioned.
+# I will differentiate it by calling it domain2.com.  Remember that domain.com is for local mTLS connections and the setup
+# for that is above.  Here is the additional setup for config.yml (also including the LOCAL mTLS setup with an alternate domain name)
+##
 
 http:
   routers:
@@ -192,7 +209,7 @@ http:
       middlewares:
         - middleware1
         - middleware2
-      rule: Host(`foo.domain.com`)
+      rule: Host(`foo.domain.com`)  ## first domain
       service: testapp
       tls:
         options: acmeClient
@@ -202,7 +219,7 @@ http:
       middlewares:
         - middleware1
         - middleware2
-      rule: Host(`foo.domain2.com`)
+      rule: Host(`foo.domain2.com`)  ## second domain
       service: testapp-cf
       tls: {}
 
@@ -217,12 +234,18 @@ http:
         passHostHeader: true
         servers:
           - url: http://192.168.0.2:1234
+
 ```
-This provides the best of both worls as you can have a very secure internal network.  
-Anyone that doesnt have athe proper client-cert will not be able to login to your applications.
+This provides the best of both worlds as you can have a very secure internal network.  
+Anyone that doesnt have the proper client-cert will not be able to login to your applications.
 They wont even be able to see the application login page!
 
 Externally, for API's that need to be exposed, you now have Cloudflare client side mTLS set up!
+The same security applies here as well, however I would warn that you probably should put all your
+eggs in one basket and treat this security measure as a layer of protection, not a complete solution 
+as that does not exist.
+
+Continuing on now are other configs you could use
 ```
 ---
 ## Setup Caddy for Client Auth
