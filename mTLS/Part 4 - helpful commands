@@ -1,0 +1,30 @@
+(This is not complete at all!)
+
+For local setup:
+
+step ca certificate admin@example.com example.com.crt example.com.key --not-after=8760h 
+openssl pkcs12 -export -out example.com.p12 -inkey example.com.key -in example.com.crt -name "example.com"
+
+scp dankk-io.p12 user@192.0.2.10:/home/dankk/docker/traefik/certs
+sudo cp example.com.crt /usr/local/share/ca-certificates
+sudo update-ca-certificates
+(make sure you write that the root_ca and intermediate_ca need to also be added)
+
+check if cert is trusted:
+sudo chmod 644 cert.crt
+openssl verify -CAfile /etc/ssl/certs/ca-certificates.crt /usr/local/share/ca-certificates/intermediate_ca.crt
+openssl verify -CAfile root_or_intermediate.crt certificate_to_test.crt
+
+Windows - open certmgr for computer and for person (add what they are called)
+import .p12 into Current User, 
+intermediate_ca into intermediate Current User and Local Machine, 
+and root_ca into  Current User and Local Machine trusted root
+
+restart a browser to load new cert (brave browser first for my test)
+
+#step certificate p12 example.com.p12 example.com.crt example.com.key --ca /etc/step/certs/intermediate_ca.crt
+
+# As root, or prepend with sudo of course
+wget --no-check-certificate https://ca.example.home/roots.pem -O /usr/local/share/ca-certificates/example_ca.crt
+update-ca-certificates
+
