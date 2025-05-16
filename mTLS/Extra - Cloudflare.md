@@ -83,7 +83,7 @@
 
 <img src="https://github.com/user-attachments/assets/cc0c4c9d-0554-471c-87e5-4c877f747323" alt="Brave Certificate Import" width="600" height="auto">
 
-### Chrome
+### Chrome (gross)
 
 <img src="https://github.com/user-attachments/assets/3ff40b38-1195-48f8-adb2-26eef008c402" alt="Chrome Certificate Settings" width="600" height="auto">
 
