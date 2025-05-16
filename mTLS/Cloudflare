@@ -1,0 +1,41 @@
+# Cloudflare mTLS Setup Guide
+
+## 1. Generate a Client Certificate
+- Log in to the Cloudflare Dashboard.
+- Navigate to SSL/TLS > Client Certificates.
+- Click "Create Certificate".
+  - Choose "Private key type" (e.g., RSA 2048).
+  - Set "Certificate Validity" (default is 10 years).
+- Click "Create".
+- Download the certificate and private key.
+
+## 2. Enable mTLS for Your Hostname
+- In the Cloudflare Dashboard, go to SSL/TLS > Client Certificates.
+- Under the "Hosts" section, click "Edit".
+- Enter the hostname(s) you want to secure with mTLS.
+- Click "Save".
+
+## 3. Configure Access Policies (Optional but Recommended)
+- Navigate to Access > Applications.
+- Select the application you want to protect or create a new one.
+- Under "Policies", add a new policy:
+  - Action: Choose "Service Auth".
+  - Include: Select "Valid Certificate" or specify "Common Name" if you want to restrict to specific certificates.
+- Click "Save".
+
+## 4. Configure Your Origin Server to Require Client Certificates
+- Install the Cloudflare Origin CA root certificate on your server.
+- Configure your web server (e.g., Nginx, Apache) to require client certificates for incoming connections.
+  - For Nginx:
+    ssl_verify_client on;
+    ssl_client_certificate /path/to/cloudflare_origin_ca.pem;
+  - For Apache:
+    SSLVerifyClient require
+    SSLCACertificateFile /path/to/cloudflare_origin_ca.pem
+
+## 5. Test the mTLS Configuration
+- Use curl to test access:
+  - Without client certificate (should be denied):
+    curl -v https://yourdomain.com
+  - With client certificate (should be allowed):
+    curl -v --cert client.crt --key client.key https://yourdomain.com
