@@ -1,8 +1,14 @@
-# Cloudflare mTLS Setup Guide <p align="right">
-  <img src="https://github.com/user-attachments/assets/b8f84172-927f-44d6-b008-f71b2bd674dd" height="100" style="vertical-align: middle;"/>
-</p>
-
-
+<table>
+  <tr>
+    <td>
+      <img src="https://github.com/user-attachments/assets/b55803a8-a969-4b5a-b29e-7b982661d7ba" 
+           alt="mTLS Logo" width="200" />
+    </td>
+    <td>
+      <h1>Cloudflare mTLS Setup Guide</h1>
+    </td>
+  </tr>
+</table>
 
 ## 1. Generate a Client Certificate
 
