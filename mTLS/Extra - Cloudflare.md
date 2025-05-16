@@ -1,4 +1,6 @@
-# Cloudflare mTLS Setup Guide ![image](https://github.com/user-attachments/assets/b8f84172-927f-44d6-b008-f71b2bd674dd)
+# Cloudflare mTLS Setup Guide <p align="right">
+  <img src="https://github.com/user-attachments/assets/b8f84172-927f-44d6-b008-f71b2bd674dd" height="100" style="vertical-align: middle;"/>
+</p>
 
 
 
