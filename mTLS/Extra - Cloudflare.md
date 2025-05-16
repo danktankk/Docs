@@ -1,14 +1,10 @@
-<table>
-  <tr>
-    <td>
-      <img src="https://github.com/user-attachments/assets/b55803a8-a969-4b5a-b29e-7b982661d7ba" 
-           alt="mTLS Logo" width="200" />
-    </td>
-    <td>
-      <h1>Cloudflare mTLS Setup Guide</h1>
-    </td>
-  </tr>
-</table>
+<h1>
+  <img src="https://github.com/user-attachments/assets/b55803a8-a969-4b5a-b29e-7b982661d7ba"
+       alt="mTLS Logo"
+       width="250"
+       align="middle" />
+  Cloudflare mTLS Setup Guide
+</h1>
 
 ## 1. Generate a Client Certificate
 
