@@ -1,5 +1,6 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/981c376b-5a6a-42ae-802e-2bf6f3e36411" height="100" style="vertical-align: middle;"/>
+  <img src="https://github.com/user-attachments/assets/a716dce5-808f-488b-8551-17a7d1f4c0c6" height="100" style="vertical-align: middle;"/>
 </p>
 
 ## What is mTLS?
