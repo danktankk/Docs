@@ -37,7 +37,7 @@
 - Click **Create Rule** and configure as follows:
 <img src="https://github.com/user-attachments/assets/990e7083-6be2-4759-93fe-8ee7fdf0358b" alt="WAF Dashboard" width="600" height="auto">
 
-  - **Rule Name**: `mTLS-Authenticated Verification`.
+  - **Rule Name**: `mTLS-enforced authentication`.
   - **Field**: `Client Certificate Verified`.
     - **Operator**: `equals`.
     - **Value**: `Off`.
