@@ -12,7 +12,7 @@
 <img src="https://github.com/user-attachments/assets/7c71bb8e-83d8-46c0-a23d-70048098c876" alt="Create Client Certificate" width="600" height="auto">
 
 - Copy and paste the `.crt` and `.key` contents into separate files using your CLI.
-<img src="https://github.com/user-attachments/assets/f3ceaf83-14fd-4ceb-a47b-350edebfd015" alt="Edit Hosts" width="300" height="auto">
+<img src="https://github.com/user-attachments/assets/d7a52d68-2452-4794-a297-98495b06da15" alt="Edit Hosts" width="300" height="auto">
 
 ## 2. Enable mTLS for Your Hostname
 
