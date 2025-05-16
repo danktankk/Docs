@@ -9,33 +9,27 @@
     - *ECC offers stronger security per bit, better performance, and efficiency compared to RSA.*
   - Set **Certificate Validity** (default is 10 years).
 - Click **Create**.
-- Download the certificate and private key.
-  - Copy and paste the `.crt` and `.key` contents into separate files using your CLI.
-
 <img src="https://github.com/user-attachments/assets/7c71bb8e-83d8-46c0-a23d-70048098c876" alt="Create Client Certificate" width="600" height="auto">
+
+- Copy and paste the `.crt` and `.key` contents into separate files using your CLI.
+<img src="https://github.com/user-attachments/assets/c284d991-a46b-45e6-8f58-7b79c1209f8e" alt="Edit Hosts" width="300" height="auto">
 
 ## 2. Enable mTLS for Your Hostname
 
 - In the same **Client Certificates** section, click **Edit** at the top.
 
-<img src="https://github.com/user-attachments/assets/c284d991-a46b-45e6-8f58-7b79c1209f8e" alt="Edit Hosts" width="600" height="auto">
+<img src="https://github.com/user-attachments/assets/998fd77b-9fa9-40c2-a76f-cf0c770ac75a" alt="Add Hostnames" width="600" height="auto">
 
 - Enter the hostname(s) you want to secure with mTLS:
   - e.g., `domain.com` and `*.domain.com`.
-
-<img src="https://github.com/user-attachments/assets/998fd77b-9fa9-40c2-a76f-cf0c770ac75a" alt="Add Hostnames" width="600" height="auto">
 
 - Click **Save**.
 
 ## 3. Configure WAF Rule
 
 - Navigate to **Security > WAF**.
-
-<img src="https://github.com/user-attachments/assets/990e7083-6be2-4759-93fe-8ee7fdf0358b" alt="WAF Dashboard" width="600" height="auto">
-
 - Click **Create Rule** and configure as follows:
-
-<img src="https://github.com/user-attachments/assets/3b495350-2a7d-41e7-9396-a3c87f8a1042" alt="WAF Rule Configuration" width="600" height="auto">
+<img src="https://github.com/user-attachments/assets/990e7083-6be2-4759-93fe-8ee7fdf0358b" alt="WAF Dashboard" width="600" height="auto">
 
   - **Rule Name**: `Block Unverified Clients`.
   - **Field**: `Client Certificate Verified`.
@@ -46,6 +40,7 @@
     - **Operator**: `contains`.
     - **Value**: `domain.com`.
   - **Action**: `Block`.
+<img src="https://github.com/user-attachments/assets/3b495350-2a7d-41e7-9396-a3c87f8a1042" alt="WAF Rule Configuration" width="600" height="auto">
 
 - Click **Deploy** to activate the rule.
 
@@ -53,11 +48,11 @@
 
 - Navigate to **DNS**.
 - Change the proxy status of your domain to **DNS Only**.
-  - This can improve load times for services like SearXNG.
+  - This can drastically improve load times for SearXNG.
 
 ## 5. Create a `.p12` Certificate Bundle
 
-- Open a terminal in the directory containing your mTLS key pair.
+- Open a terminal in the directory you previously saved your mTLS key pair.
 - Run the following command:
 
   ```bash
@@ -88,6 +83,17 @@
 
 <img src="https://github.com/user-attachments/assets/22693678-ee44-4718-86be-f71caec6255b" alt="Chrome Certificate Import" width="600" height="auto">
 
+### Android
+
+Installing a `.p12` certificate on Android is pretty straightforward:
+
+- Android certs are system-wide and are easy to find as well.  Go into settings for your device and search for `cert` and then tap on `VPN & app user certificate`.
+- Select your .p12 file, input the password, and thats pretty much it.
+- Not all browsers are made the same and due to this, some browsers dont work as well as others.  I know the chrome, opera, and edge work well.  Brave doesnt always work but has recently started showing improvement.
+
+### Apple
+- Dont care.
+
 ## 7. Test the mTLS Configuration
 
 - Open your SearXNG instance.
@@ -99,7 +105,8 @@
 
 ---
 
-**Note:** Always keep your `.p12` file and its associated password secure. If lost, you'll need to regenerate the certificate and repeat the installation process on all devices.
+# **IMPORTANT:** 
+### Always keep your `.p12` file and its associated password secure. If lost, you'll need to regenerate the certificate and repeat the installation process on all devices.
 
 
 
