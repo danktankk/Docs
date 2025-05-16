@@ -97,7 +97,7 @@ Installing a `.p12` certificate on Android is pretty straightforward:
 - Select your .p12 file, input the password, and thats pretty much it.
 - Not all browsers are made the same and due to this, some browsers dont work as well as others.  I know the chrome, opera, and edge work well.  Brave doesnt always work but has recently started showing improvement.
 
-### Apple
+### Apple/iOS
 - Dont care.
 
 ## 7. Test the mTLS Configuration
