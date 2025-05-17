@@ -50,13 +50,7 @@
 
 - Click **Deploy** to activate the rule.
 
-## 4. (Optional) Adjust DNS Settings
-
-- Navigate to **DNS**.
-- Change the proxy status of your domain to **DNS Only**.
-  - This can drastically improve load times for SearXNG.
-
-## 5. Create a `.p12` Certificate Bundle
+## 4. Create a `.p12` Certificate Bundle
 
 - Open a terminal in the directory you previously saved your mTLS key pair.
 - Run the following command:
@@ -69,7 +63,7 @@
   - You'll be prompted to set an export password.
   - The resulting `cf-ecc.p12` file can be used on browsers and mobile devices.
 
-## 6. Install the `.p12` Certificate in Your Browser
+## 5. Install the `.p12` Certificate in Your Browser
 
 ### LibreWolf
 
@@ -100,7 +94,7 @@ Installing a `.p12` certificate on Android is pretty straightforward:
 ### Apple/iOS
 - Dont care.
 
-## 7. Test the mTLS Configuration
+## 6. Test the mTLS Configuration
 
 - Open your SearXNG instance.
 - You should be prompted to select your certificate from a dropdown.
