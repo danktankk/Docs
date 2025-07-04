@@ -30,15 +30,16 @@ step ca certificate "host1_192.168.100.150" \
 (uptime) cp key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out key.pem && rm key-with-pass.pem
 (docker) cp docker-api-key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out docker-api-key.pem && rm key-with-pass.pem
 ```
-### test from the cert dir on uptime kuma (optional and more for if it doesnt work at first)
+### test from the cert dir on uptime kuma (optional)
 ```
-curl --cert data/docker-tls/192.168.160.110/cert.pem \
-     --key  data/docker-tls/192.168.160.110/key.pem \
-     --cacert data/docker-tls/192.168.160.110/ca.pem \
-     https://192.168.160.110:2376/version
+curl --cert data/docker-tls/192.168.100.110/cert.pem \
+     --key  data/docker-tls/192.168.100.110/key.pem \
+     --cacert data/docker-tls/192.168.100.110/ca.pem \
+     https://192.168.100.110:2376/version
 ```
 
 ### pull the certs from step-ca (all in their own dirs)
+note: 
 
 ```
 docker host keys:
@@ -58,15 +59,27 @@ scp -i ~/.ssh/arch root@192.168.100.122:/etc/step/certs/dockerRemoteAPI/uptime-k
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/pi4-2/ca-bundle.pem dankk@192.168.100.150:~/
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/pi4-2/docker-api.pem dankk@192.168.100.150:~/
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/pi4-2/docer-api-key.pem dankk@192.168.100.150:~/
-
-then to uptime-kuma dir @ /docker-tls/<ip for docker host>/<here>:
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.100.150/key.pem dankk@192.168.100.110:~/
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.100.150/cert.pem dankk@192.168.100.110:~/
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.150/ca-bundle.pem dankk@192.168.100.110:~/ca.pem
-
-## be sure you rename ca-bundle.pem to ca.pem
-## uptime-kuma wont work unless you have the correct directories and names
 ```
+#### Add the following to: /etc/docker/daemon.json on docker host
+```
+{
+  "hosts": ["unix:///var/run/docker.sock", "tcp://192.168.100.150:2376"],
+  "tls": true,
+  "tlsverify": true,
+  "tlscacert": "/etc/docker/certs/ca-bundle.pem",
+  "tlscert": "/etc/docker/certs/docker-api.pem",
+  "tlskey": "/etc/docker/certs/docker-api-key.pem"
+}
+```
+
+```
+then to uptime-kuma dir @ /path/to/uptime-kuma/docker-tls/<ip for docker host>/<here>
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.100.150/key.pem dankk@192.168.100.110:~/docker/uptime-kuma/docker-tls/192.168.100.150/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.100.150/cert.pem dankk@192.168.100.110:~/docker/uptime-kuma/docker-tls/192.168.100.150/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.150/ca-bundle.pem dankk@192.168.100.110:~/uptime-kuma/docker-tls/192.168.100.150/
+```
+## be sure you rename ca-bundle.pem to ca.pem
+## uptime-kuma wont use the cert unless you have the correct directories and names
 
 - change perms on the certs to 644 for everything but the key which is 600
 - docker systemctl daemon-reload on docker host 
