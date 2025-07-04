@@ -38,10 +38,10 @@ step ca certificate "host1_192.168.100.150" \
 ```
 ### test from the cert dir on uptime kuma (optional)
 ```
-curl --cert data/docker-tls/192.168.100.110/cert.pem \
-     --key  data/docker-tls/192.168.100.110/key.pem \
-     --cacert data/docker-tls/192.168.100.110/ca.pem \
-     https://192.168.100.110:2376/version
+curl --cert data/docker-tls/192.168.100.150/cert.pem \
+     --key  data/docker-tls/192.168.100.150/key.pem \
+     --cacert data/docker-tls/192.168.100.150/ca.pem \
+     https://192.168.100.150:2376/version
 ```
 
 ### pull the certs from step-ca (all in their own dirs)
