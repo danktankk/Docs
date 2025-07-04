@@ -26,9 +26,10 @@ step ca certificate "host1_192.168.100.150" \
   --san 192.168.100.150
 ```
 ### remove password from key files:
-(uptime) `cp key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out key.pem && rm key-with-pass.pem`
-(docker) `cp docker-api-key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out docker-api-key.pem && rm key-with-pass.pem`
-
+```
+(uptime) cp key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out key.pem && rm key-with-pass.pem
+(docker) cp docker-api-key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out docker-api-key.pem && rm key-with-pass.pem
+```
 ### test from the cert dir on uptime kuma (optional and more for if it doesnt work at first)
 ```
 curl --cert data/docker-tls/192.168.160.110/cert.pem \
