@@ -76,15 +76,15 @@ scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/host/docer-api-k
   "tlskey": "/etc/docker/certs/docker-api-key.pem"
 }
 ```
-
-```
 then to uptime-kuma dir @ /path/to/uptime-kuma/docker-tls/<ip for docker host>/<here>
+```
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/key.pem user@192.0.2.10:~/docker/uptime-kuma/docker-tls/192.0.2.10/
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/cert.pem user@192.0.2.10:~/docker/uptime-kuma/docker-tls/192.0.2.10/
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/ca-bundle.pem user@192.0.2.10:~/uptime-kuma/docker-tls/192.0.2.10/
 ```
-## be sure you rename ca-bundle.pem to ca.pem
-## uptime-kuma wont use the cert unless you have the correct directories and names
+>[!WARNING]
+> be sure you rename ca-bundle.pem to ca.pem
+uptime-kuma wont use the cert unless you have the correct directories and names
 
 - change perms on the certs to 644 for everything but the key which is 600
 - docker systemctl daemon-reload on docker host 
