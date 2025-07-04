@@ -87,6 +87,8 @@ scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.150/c
 >[!WARNING]
 > be sure you rename ca-bundle.pem to ca.pem
 uptime-kuma wont use the cert unless you have the correct directories and names
+>the directory names also are named in a particular way due to how uptime-kuma
+>handles certs for docker hosts.  see https://github.com/louislam/uptime-kuma/wiki/How-to-Monitor-Docker-Containers
 
 - change perms on the certs to 644 for everything but the key which is 600
 - docker systemctl daemon-reload on docker host 
