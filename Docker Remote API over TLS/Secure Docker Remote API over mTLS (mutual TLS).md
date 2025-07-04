@@ -1,4 +1,5 @@
-# Secure Docker Remote API over mTLS
+<h1 align="center">Secure Docker Remote API over mTLS</h1>
+
 <div align="center">
   <img src="https://github.com/danktankk/Docs/blob/main/Docker%20Remote%20API%20over%20TLS/Assets/dockerr2.png" width="250" vertical-align: top; align="right"/>
 </div>
