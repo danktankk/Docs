@@ -1,5 +1,6 @@
 <div align="center">
-  <img src="https://your-image-url/docker-whale.png" width="200" alt="Docker Icon" align="left"/>
+  <img src="https://github.com/youruser/yourrepo/raw/main/assets/docker-whale.png"
+       width="200" alt="Docker Icon" align="left"/>
   <h1 style="display: inline-block; vertical-align: middle; margin-left: 16px;">
     Secure Docker Remote API over mTLS
   </h1>
