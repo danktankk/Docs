@@ -1,6 +1,6 @@
 <div style="display: flex; align-items: center; justify-content: space-between;">
-  <h1 style="margin: 0;">Secure Docker Remote API over mTLS</h1>
-  <img src="Assets/dockerr2.png" alt="Docker mTLS" style="height: 100px; margin-left: 10px;">
+  <h1 style="margin: 30;">Secure Docker Remote API over mTLS</h1>
+  <img src="Assets/dockerr2.png" alt="Docker mTLS" style="height: 100px; margin-left: 0px;">
 </div>
 
 
