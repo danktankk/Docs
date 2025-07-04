@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/danktankk/Docs/blob/main/Docker%20Remote%20API%20over%20TLS/Assets/dockerr.png" height="100" style="vertical-align: middle;"/>
+  <img src="https://github.com/danktankk/Docs/blob/main/Docker%20Remote%20API%20over%20TLS/Assets/dockerr.png" style="vertical-align: middle;"/>
 </p>
 
 ## Secure Docker Remote API via mTLS (3-tier PKI with YubiKey + Smallstep)
