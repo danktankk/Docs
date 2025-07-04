@@ -93,10 +93,13 @@ uptime-kuma wont use the certs unless you have the correct directories and names
 - change perms on the certs to 644 for everything but the key which is 600
 - docker systemctl daemon-reload on docker host 
 - docker systectl restart docker on docker host
-- add volume to docker-compose:
-      - /home/$USER/docker/uptime-kuma/docker-tls/192.168.160.150:/app/data/docker-tls/192.168.160.150:ro
+>[!WARNING]
+>dont forget to add a bind mount for the certs so uptime-kuma can find them!  
+>Example:
+>      - /home/$USER/docker/uptime-kuma/docker-tls:/app/data/docker-tls:ro
 - restart the container:  `docker compose up -d --force-recreate && docker compose logs -f`
 
+## Troubleshooting:
 If Docker fails to restart, edit the `override.conf` file for the docker.service to include the following:
 `sudo nano /etc/systemd/system/docker.service.d/override.conf`
 ```
