@@ -1,68 +1,79 @@
-
-
-## Secure Docker Remote API over mTLS (mutual TLS)
-### For the docker host:
-```
-step ca certificate pi4-3 \
+Certificate Issuance with step-ca
+For the Docker Host:
+bash
+Copy
+Edit
+step ca certificate node-alpha \
   docker-api.pem \
   docker-api-key.pem \
-  --san pi4-3 \
-  --san 192.168.160.150
-```
-### For the uptime monitor
-```
-step ca certificate "pi4-3_192.168.160.130" \
+  --san node-alpha \
+  --san 10.10.10.10
+For the Monitoring Client (e.g. Uptime-Kuma):
+bash
+Copy
+Edit
+step ca certificate "node-alpha_10.10.10.20" \
   cert.pem \
   key.pem \
-  --san 192.168.160.130
-```
-### remove password from key files:
-(uk) cp key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out key.pem && rm key-with-pass.pem
-(docker) cp docker-api-key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out docker-api-key.pem && rm key-with-pass.pem
+  --san 10.10.10.20
+Remove password from private keys:
+bash
+Copy
+Edit
+# On client
+cp key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out key.pem && rm key-with-pass.pem
 
-### test from the cert dir on uptime kuma (optional and more for if it doesnt work at first)
-```
-curl --cert data/docker-tls/192.168.160.110/cert.pem \
-     --key  data/docker-tls/192.168.160.110/key.pem \
-     --cacert data/docker-tls/192.168.160.110/ca.pem \
-     https://192.168.160.110:2376/version
-```
+# On Docker host
+cp docker-api-key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out docker-api-key.pem && rm key-with-pass.pem
+🧪 Optional: Test Docker Remote API Access
+bash
+Copy
+Edit
+curl --cert data/docker-tls/10.10.10.10/cert.pem \
+     --key  data/docker-tls/10.10.10.10/key.pem \
+     --cacert data/docker-tls/10.10.10.10/ca.pem \
+     https://10.10.10.10:2376/version
+📥 Pull Certificates from Step-CA
+For Docker Host:
+bash
+Copy
+Edit
+scp -i ~/.ssh/id_ed25519 root@10.10.10.1:/etc/step/certs/dockerRemoteAPI/docker-hosts/node-alpha/docker-api.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-alpha/
+scp -i ~/.ssh/id_ed25519 root@10.10.10.1:/etc/step/certs/dockerRemoteAPI/docker-hosts/node-alpha/docker-api-key.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-alpha/
+For Monitoring Client:
+bash
+Copy
+Edit
+scp -i ~/.ssh/id_ed25519 root@10.10.10.1:/etc/step/certs/dockerRemoteAPI/uptime-kuma/10.10.10.20/{cert.pem,key.pem,ca-bundle.pem} ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.10.10.20/
+📤 Push Certificates to Hosts
+Send certs to Docker host:
+bash
+Copy
+Edit
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/ca-bundle.pem user@10.10.10.10:~/
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/docker-api.pem user@10.10.10.10:~/
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/docker-api-key.pem user@10.10.10.10:~/
+Send certs to Uptime-Kuma host:
+bash
+Copy
+Edit
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.10.10.20/{cert.pem,key.pem,ca-bundle.pem} user@10.10.10.30:~/
+mv ca-bundle.pem ca.pem  # Rename if needed
+🛠 Final Setup
+Set permissions:
+chmod 644 *.pem && chmod 600 *key.pem
 
-### pull the certs from step-ca (all in their own dirs)
+On Docker host:
+sudo systemctl daemon-reexec && sudo systemctl restart docker
 
-```
-docker host keys ():
-scp -i ~/.ssh/pop-os root@192.168.160.122:/etc/step/certs/dockerRemoteAPI/docker-hosts/pi4-1/docker-api.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/pi4-1/
-docker-api.pem
-scp -i ~/.ssh/pop-os root@192.168.160.122:/etc/step/certs/dockerRemoteAPI/docker-hosts/pi4-1/docker-api-key.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/pi4-1/
-docker-api-key.pem
+Add volume to docker-compose.yml (Uptime-Kuma):
 
-uptime-kuma keys for this particular host:
-scp -i ~/.ssh/pop-os root@192.168.160.122:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.168.160.120/ca-bundle.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.120/
-scp -i ~/.ssh/pop-os root@192.168.160.122:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.168.160.120/cert.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.120/
-scp -i ~/.ssh/pop-os root@192.168.160.122:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.168.160.120/key.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.120/
-```
+yaml
+Copy
+Edit
+    volumes:
+      - /home/user/docker/uptime-kuma/docker-tls/10.10.10.10:/app/data/docker-tls/10.10.10.10:ro
+Define Docker Remote API in Uptime-Kuma UI.
 
-### push host keys to the appropriate docker host
-```
-scp -i ~/.ssh/pop-os ~/certs/step-ca/dockerRemoteAPI/docker-hosts/pi4-2/ca-bundle.pem dankk@192.168.160.120:~/
-scp -i ~/.ssh/pop-os ~/certs/step-ca/dockerRemoteAPI/docker-hosts/pi4-2/docker-api.pem dankk@192.168.160.120:~/
-scp -i ~/.ssh/pop-os ~/certs/step-ca/dockerRemoteAPI/docker-hosts/pi4-2/docer-api-key.pem dankk@192.168.160.120:~/
-
-then to uptime-kuma dir @ /docker-tls/<192.168.160.120>/<here>:
-scp -i ~/.ssh/pop-os ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.120/key.pem dankk@192.168.160.110:~/
-scp -i ~/.ssh/pop-os ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.120/cert.pem dankk@192.168.160.110:~/
-scp -i ~/.ssh/pop-os ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.120/ca-bundle.pem dankk@192.168.160.110:~/ca.pem
-
-be sure you rename ca-bundle.pem to ca.pem
-uptime-kuma wont work unless you have the correct durectories and names
-```
-
-- change perms on the certs to 644 for everything but the key which is 600
-- docker systemctl daemon-reload on docker host 
-- docker systectl restart docker on docker host
-- add volume to docker-compose:
-      - /home/dankk/docker/uptime-kuma/docker-tls/192.168.160.150:/app/data/docker-tls/192.168.160.150:ro
-- dfl on uptime kuma
-
-if error on docker restart - docker service needs to be edited to remove that -H part
+Note:
+If Docker fails to restart due to -H conflict, check your Docker service file and remove conflicting -H flags.
