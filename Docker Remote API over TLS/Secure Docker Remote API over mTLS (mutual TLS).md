@@ -12,6 +12,8 @@ This setup uses Smallstep CA with a YubiKey-backed EC intermediate (slot 9c). Ce
 ---
 
 # Certificate Issuance via Smallstep
+>[!NOTE]
+>I’ve developed a script that automates this process, but it’s currently tailored to a very specific environment and unlikely to be directly compatible with most peoples infra. I’m working on revising it to accept runtime variables, so it can scale and adapt to a wider range of lab configurations.
 
 ## TLS for Docker Remote API
 ### For the docker host:
