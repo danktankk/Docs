@@ -22,5 +22,5 @@ All certificates are ECDSA-based (P-256), and mTLS communication is encrypted us
 - Smallstep CA (custom-built with YubiKey support) handles issuance
 - ACME + JWK provisioners supported for flexible cert management
 - Docker API exposed securely over TCP with full bidirectional TLS verification
-- Hardware‑backed intermediate CA on YubiKey for signing mTLS certs (root CA offline, no external dependencies; air-gapped 10-year)
+- Hardware‑backed intermediate CA on YubiKey for signing mTLS certs (root CA offline; air-gapped, 10-year)
 
