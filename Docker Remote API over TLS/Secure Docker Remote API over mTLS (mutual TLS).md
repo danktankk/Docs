@@ -46,13 +46,12 @@ curl --cert data/docker-tls/10.20.1.11/cert.pem \
 ---
 
 ## Pull Certificates from Step-CA
-
-# Docker Host: node-alpha
 ```
+# To Docker Host: node-alpha
 scp -i ~/.ssh/id_ed25519 root@10.20.1.1:/etc/step/certs/dockerRemoteAPI/docker-hosts/node-alpha/docker-api.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-alpha/
 scp -i ~/.ssh/id_ed25519 root@10.20.1.1:/etc/step/certs/dockerRemoteAPI/docker-hosts/node-alpha/docker-api-key.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-alpha/
 
-# Uptime-Kuma Client
+# To Uptime-Kuma
 scp -i ~/.ssh/id_ed25519 root@10.20.1.1:/etc/step/certs/dockerRemoteAPI/uptime-kuma/10.20.1.100/cert.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/
 scp -i ~/.ssh/id_ed25519 root@10.20.1.1:/etc/step/certs/dockerRemoteAPI/uptime-kuma/10.20.1.100/key.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/
 scp -i ~/.ssh/id_ed25519 root@10.20.1.1:/etc/step/certs/dockerRemoteAPI/uptime-kuma/10.20.1.100/ca-bundle.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/
@@ -60,18 +59,19 @@ scp -i ~/.ssh/id_ed25519 root@10.20.1.1:/etc/step/certs/dockerRemoteAPI/uptime-k
 ---
 
 ## Push Certificates to Hosts
+```
+# Docker Host: (10.20.1.12)
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/ca-bundle.pem user@10.20.1.12:~/
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/docker-api.pem user@10.20.1.12:~/
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/docker-api-key.pem user@10.20.1.12:~/
 
-# Docker Host: node-beta (10.20.1.12)
-`scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/ca-bundle.pem user@10.20.1.12:~/`
-`scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/docker-api.pem user@10.20.1.12:~/`
-`scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-beta/docker-api-key.pem user@10.20.1.12:~/`
-
-# Uptime-Kuma Host (10.20.1.100)
-`scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/cert.pem user@10.20.1.50:~/`
-`scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/key.pem user@10.20.1.50:~/`
-`scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/ca-bundle.pem user@10.20.1.50:~/ca.pem`
-
-mv ca-bundle.pem ca.pem
+# Uptime-Kuma (10.20.1.100)
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/cert.pem user@10.20.1.50:~/
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/key.pem user@10.20.1.50:~/
+scp -i ~/.ssh/id_ed25519 ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/10.20.1.100/ca-bundle.pem user@10.20.1.50:~/ca.pem
+```
+change ca name to work with uptime-kuma
+`mv ca-bundle.pem ca.pem`
 
 ---
 
