@@ -1,4 +1,4 @@
-# Secure Docker Remote API over mTLS
+# Secure Docker Remote API over mTLS   
 
 This setup uses Smallstep CA with a YubiKey-backed EC intermediate (slot 9c). Certificates are issued via JWT or ACME provisioners and secured using modern cipher suites:
 ```
@@ -96,7 +96,17 @@ volumes:
 
 ## Uptime-Kuma Config
 
-Add or Update Docker Host:
-https://10.20.1.11:2376 and test
+Add or Update Docker Host: (i.e.
+https://10.20.1.11:2376) and test
 
-If Docker fails to start, remove any `-H` lines from the systemd unit file and reload the service.
+If Docker fails to restart, edit the `override.conf` file for the docker.service to include the following:
+`sudo nano /etc/systemd/system/docker.service.d/override.conf`
+```
+[Service]
+ExecStart= 
+ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock
+```
+No the empty `ExecStart=` is not a mistake.
+
+1. sudo systemctl daemon-reload
+2. sudo systemctl restart docker
