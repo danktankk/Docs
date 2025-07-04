@@ -48,14 +48,15 @@ curl --cert data/docker-tls/192.0.2.20/cert.pem \
 ## Pull Certificates from Step-CA
 
 # Docker Host: node-alpha
-`scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/docker-hosts/node-alpha/docker-api.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-alpha/`
-`scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/docker-hosts/node-alpha/docker-api-key.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-alpha/`
+```
+scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/docker-hosts/node-alpha/docker-api.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-alpha/
+scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/docker-hosts/node-alpha/docker-api-key.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/node-alpha/
 
 # Uptime-Kuma Client
-`scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.20/cert.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.20/`
-`scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.20/key.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.20/`
-`scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.20/ca-bundle.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.20/`
-
+scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.20/cert.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.20/
+scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.20/key.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.20/
+scp -i ~/.ssh/id_ed25519 root@192.0.2.20:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.20/ca-bundle.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.20/
+```
 ---
 
 ## Push Certificates to Hosts
