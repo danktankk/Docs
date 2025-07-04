@@ -43,7 +43,7 @@ curl --cert data/docker-tls/192.168.100.110/cert.pem \
 ```
 
 ### pull the certs from step-ca (all in their own dirs)
-note: 
+note: this would be easiest to just scp from your step-ca machine over directly to the docker host and uptime monitoring solution you have.  I have an intermediary stop in my flow due to how I back certain things up.  So you could easily skip the double scp session by just sending direct to the machines you atre working on.
 
 ```
 docker host keys:
