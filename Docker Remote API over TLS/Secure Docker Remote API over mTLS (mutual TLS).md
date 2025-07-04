@@ -1,7 +1,9 @@
-<p align="center">
-  <strong style="font-size: 2em; float: left; margin-top: 25px;">Secure Docker Remote API over mTLS</strong>
-  <img src="Assets/dockerr2.png" alt="Docker mTLS" height="80" style="vertical-align: middle; margin-left: 15px;">
-</p>
+<div align="center">
+  <img src="[https://your-image-url/docker-whale.png](https://github.com/danktankk/Docs/blob/main/Docker%20Remote%20API%20over%20TLS/Assets/dockerr2.png)" width="200" alt="Docker Icon" align="left"/>
+  <h1 style="display: inline-block; vertical-align: middle; margin-left: 16px;">
+    Secure Docker Remote API over mTLS
+  </h1>
+</div>
 
 
 
