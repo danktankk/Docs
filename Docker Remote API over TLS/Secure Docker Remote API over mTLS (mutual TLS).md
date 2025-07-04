@@ -9,11 +9,12 @@ This setup uses Smallstep CA with a YubiKey-backed EC intermediate (slot 9c). Ce
 ## Certificate Issuance via Smallstep
 
 # For Docker Host (node-alpha, IP 192.0.2.20)
+```
 step ca certificate node-alpha \
   docker-api.pem \
   docker-api-key.pem \
   --san node-alpha \
-  --san 192.0.2.20
+  --san 192.0.2.20```
 
 # For Monitoring Client (Uptime-Kuma on 192.0.2.20)
 step ca certificate "node-alpha_10.20.1.100" \
