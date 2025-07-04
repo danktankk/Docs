@@ -1,6 +1,6 @@
-<p align="left">
-  <img src="Assets/dockerr2.png" alt="Docker mTLS" height="80" style="float: right; margin-left: 20px;" />
-  <strong style="font-size: 2em;">Secure Docker Remote API over mTLS</strong>
+<p>
+  <img src="Assets/dockerr2.png" alt="Docker mTLS" height="100" align="left" style="margin-right: 15px;">
+  <strong style="font-size: 2em; line-height: 100px;">Secure Docker Remote API over mTLS</strong>
 </p>
 
 
