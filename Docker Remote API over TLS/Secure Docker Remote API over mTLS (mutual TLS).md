@@ -1,13 +1,8 @@
-<table>
-  <tr>
-    <td width="120">
-      <img src="Assets/dockerr2.png" alt="Docker mTLS" height="100">
-    </td>
-    <td>
-      <h1 style="margin: 0;">Secure Docker Remote API over mTLS</h1>
-    </td>
-  </tr>
-</table>
+<p align="right">
+  <strong style="font-size: 1.8em; float: left; margin-top: 25px;">Secure Docker Remote API over mTLS</strong>
+  <img src="Assets/dockerr2.png" alt="Docker mTLS" height="80" style="vertical-align: middle; margin-left: 15px;">
+</p>
+
 
 
 
