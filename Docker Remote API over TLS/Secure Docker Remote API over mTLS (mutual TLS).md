@@ -1,4 +1,9 @@
-# Secure Docker Remote API over mTLS   <p align="right"><img src="https://github.com/danktankk/Docs/blob/main/Docker%20Remote%20API%20over%20TLS/Assets/dockerr2.png" height="100" style="vertical-align: middle;"/></p>
+<div align="center">
+  <img src="https://your-image-url/docker-whale.png" width="200" alt="Docker Icon" align="left"/>
+  <h1 style="display: inline-block; vertical-align: middle; margin-left: 16px;">
+    Secure Docker Remote API over mTLS
+  </h1>
+</div>
 
 This setup uses Smallstep CA with a YubiKey-backed EC intermediate (slot 9c). Certificates are issued via JWT or ACME provisioners and secured using modern cipher suites:
 ```
