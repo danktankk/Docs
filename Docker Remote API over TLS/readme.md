@@ -1,3 +1,4 @@
+https://github.com/danktankk/Docs/blob/c0be8152cc015d6c7dd9341ad2fa599408ef17da/Docker%20Remote%20API%20over%20TLS/dockerr2.jpg
 ## Secure Docker Remote API via mTLS (3-tier PKI with YubiKey + Smallstep)
 
 This project securely exposes the Docker Remote API over TCP (`tcp://<host>:2376`) using **mutual TLS (mTLS)** and a hardened **three-tier certificate hierarchy**. It’s designed to allow trusted internal services (like Uptime Kuma) to connect to Docker remotely using client certificates, rather than exposing the Docker socket, relying on SSH, or allowing unauthenticated TCP access.
