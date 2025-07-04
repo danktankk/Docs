@@ -45,8 +45,8 @@ curl --cert data/docker-tls/192.0.2.10/cert.pem \
 ```
 
 ### pull the certs from step-ca (all in their own dirs)
-> [!IMPORTANT] 
-> This would be easiest to just `scp` from your **step-ca** machine over directly to the docker host and uptime monitoring solution you have.  I have an intermediary stop in my flow due to how I back certain things up.  Skip this part if you want to and just send direct to the machines you are working on.
+> [!NOTE] 
+> This would be easiest to just `scp`|`rsync`|etc from your **step-ca** machine over directly to the docker host and uptime monitoring solution you have.  I have an intermediary stop in my flow due to how I track and backup certs. Skip this part if you want to and just send direct to the machines you are working on.
 
 ```
 docker host keys:
@@ -61,11 +61,11 @@ scp -i ~/.ssh/arch root@192.0.2.10:/etc/step/certs/dockerRemoteAPI/uptime-kuma/1
 scp -i ~/.ssh/arch root@192.0.2.10:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.10/key.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/
 ```
 
-### push host keys to the appropriate docker host
+### push host keys to the appropriate docker host (may need to create the certs dir)
 ```
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/host/ca-bundle.pem user@192.0.2.10:~/
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/host/docker-api.pem user@192.0.2.10:~/
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/host/docer-api-key.pem user@192.0.2.10:~/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/ca-bundle.pem user@192.0.2.10:~/etc/docker/certs/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/docker-api.pem user@192.0.2.10:~/etc/docker/certs/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/docker-api-key.pem user@192.0.2.10:~/etc/docker/certs/
 ```
 #### Add the following to: /etc/docker/daemon.json on docker host
 ```
