@@ -1,6 +1,6 @@
 <table>
   <tr>
-    <td><h1>Secure Docker Remote API over mTLS</h1></td>
+    <td><h2>Secure Docker Remote API over mTLS</h2></td>
     <td><img src="Assets/dockerr2.png" alt="Docker mTLS" height="100"></td>
   </tr>
 </table>
