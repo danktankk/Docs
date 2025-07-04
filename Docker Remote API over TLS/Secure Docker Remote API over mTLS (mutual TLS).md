@@ -78,24 +78,24 @@ scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/docker-api-
   "tlskey": "/etc/docker/certs/docker-api-key.pem"
 }
 ```
-then to uptime-kuma dir @ /path/to/uptime-kuma/docker-tls/<ip for docker host>/<here>
+then to uptime-kuma dir @ /path/to/uptime-kuma/docker-tls/192.168.100.150/<here>
 ```
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.100.150/key.pem user@192.168.100.110:~/docker/uptime-kuma/docker-tls/192.168.100.150/
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.100.150/cert.pem user@192.168.100.110:~/docker/uptime-kuma/docker-tls/192.168.100.150/
 scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.168.160.150/ca-bundle.pem user@192.168.100.110:~/uptime-kuma/docker-tls/192.168.100.150/
 ```
->[!WARNING]
-> be sure you rename ca-bundle.pem to ca.pem
-uptime-kuma wont use the cert unless you have the correct directories and names
+>[!IMPORTANT]
+> be sure you follow the naming conventions used by uptime-kuma for the certs on the monitor side of this.
+uptime-kuma wont use the certs unless you have the correct directories and names
 >the directory names also are named in a particular way due to how uptime-kuma
->handles certs for docker hosts.  see https://github.com/louislam/uptime-kuma/wiki/How-to-Monitor-Docker-Containers
+>handles certs for docker hosts.  see the very bottom of the page at https://github.com/louislam/uptime-kuma/wiki/How-to-Monitor-Docker-Containers
 
 - change perms on the certs to 644 for everything but the key which is 600
 - docker systemctl daemon-reload on docker host 
 - docker systectl restart docker on docker host
 - add volume to docker-compose:
       - /home/$USER/docker/uptime-kuma/docker-tls/192.168.160.150:/app/data/docker-tls/192.168.160.150:ro
-- restart the container:  docker compose up -d --force-recreate && docker compose logs -f
+- restart the container:  `docker compose up -d --force-recreate && docker compose logs -f`
 
 If Docker fails to restart, edit the `override.conf` file for the docker.service to include the following:
 `sudo nano /etc/systemd/system/docker.service.d/override.conf`
@@ -107,4 +107,4 @@ ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock
 1. sudo systemctl daemon-reload
 2. sudo systemctl restart docker
 
-Should be working now
+# Enjoy
