@@ -31,7 +31,7 @@ step ca certificate "host1_192.168.100.150" \
   key.pem \
   --san 192.168.100.150
 ```
-### remove password from key files:
+### remove password from key files (uptime does have a way to add the password that I know of):
 ```
 (uptime) cp key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out key.pem && rm key-with-pass.pem
 (docker) cp docker-api-key.pem key-with-pass.pem && openssl ec -in key-with-pass.pem -out docker-api-key.pem && rm key-with-pass.pem
