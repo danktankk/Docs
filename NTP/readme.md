@@ -5,7 +5,7 @@
 > ## Time Sync Health
 > NTP and Chrony are critical for precise time synchronization, especially in self-hosted environments where PPS (pulse-per-second) signals are used to dramatically increase accuracy, often down to the microsecond. However, these tools don’t expose an HTTP or TCP based endpoint that Uptime Kuma can monitor directly. Without a dedicated service to report time sync status (e.g., via chronyc tracking or ntpq -p), Kuma can’t detect if synchronization is failing, drifting, or degraded. Inaccurate time can silently break TLS, invalidate logs (yes you, alloy), corrupt time-series data, or cause cluster nodes to misbehave.  This makes reliable monitoring essential and with this healthcheck endpoint, it helps to ensure your time source remains trusted and stable.
 
-### 1. Uptime Kuma settings (do this first to get the needed key)
+### 1. Uptime Kuma settings (starting here to get the necessary token authenticated webhook)
 - New Monitor
 - Monitor type **Push**
 - Heartbeat interval 180 s (3 min)
