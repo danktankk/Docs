@@ -14,7 +14,7 @@
 
 > **Note:**  Set the interval to whatever you like here. A 60s heartbeat lands comfortably inside the 180s window, so Kuma never misses a push even with sporadic timer jitter, but that should be minimal anyway.
 
-### 2: create a script and then save wherever - Example: /usr/local/bin or ~/scripts 
+### 2: Create a script and then save wherever - Example: /usr/local/bin or ~/scripts 
 `nano ntp-status.sh`
 
 > **IMPORTANT** you need to remove the **query string** [?status=up&msg=OK&ping=] in the `PUSH_URL` variable as it might get double-referenced in this script otherwise
@@ -69,10 +69,10 @@ curl -fsS "${PUSH_URL}?status=down&msg=NTP_desync" >/dev/null
 exit 1
 `````
 
-### 3: make it executable:
+### 3: Make it executable:
 `chmod +x ntp-status.sh`
 
-### 3a: make your systemd service and timer:
+### 3a: Make your systemd service and timer:
 
 #### File layout
 ```
@@ -111,7 +111,7 @@ WantedBy=timers.target
 - OnUnitActiveSec= creates a fixed loop 
 - AccuracySec= keeps drift low 
 
-### 6. Enable & start
+### 6. Enable & Start
 - `sudo systemctl daemon-reload`
 - `sudo systemctl enable --now ntp-status.timer`
 
