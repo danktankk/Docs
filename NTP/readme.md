@@ -10,7 +10,7 @@
 - Monitor type **Push**
 - Heartbeat interval 180 s (3 min)
 - Save
-- Get the link provided after saving for the next step
+- Grab the webhook provided after saving for the next step
 
 > **Note:**  Set the interval to whatever you like here. A 60s heartbeat lands comfortably inside the 180s window, so Kuma never misses a push even with sporadic timer jitter, but that should be minimal anyway.
 
