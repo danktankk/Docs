@@ -221,7 +221,7 @@ PulseAudio Connection Refused: Ensure SDL_AUDIODRIVER is set to dummy to avoid a
 Buffer Underflows: Adjust the sample rate or bandwidth settings in the client if you see buffer underflows.<br>
 
 ## 7. Verify and Test
-Connect with SDR++ Client: Open SDR++ on a client machine, connect to the server IP (e.g., 192.0.2.20) on port 5259.<br>
+Connect with SDR++ Client: Open SDR++ on a client machine, connect to the server IP (e.g., 192.0.2.10) on port 5259.<br>
 
 ### Monitor Logs: Keep an eye on logs for errors or unexpected issues:
 
