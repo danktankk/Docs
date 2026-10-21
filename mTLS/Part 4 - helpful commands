@@ -5,7 +5,7 @@ For local setup:
 step ca certificate admin@example.com example.com.crt example.com.key --not-after=8760h 
 openssl pkcs12 -export -out example.com.p12 -inkey example.com.key -in example.com.crt -name "example.com"
 
-scp dankk-io.p12 user@192.0.2.10:/home/dankk/docker/traefik/certs
+scp example-io.p12 user@192.0.2.10:/home/user/docker/traefik/certs
 sudo cp example.com.crt /usr/local/share/ca-certificates
 sudo update-ca-certificates
 (make sure you write that the root_ca and intermediate_ca need to also be added)

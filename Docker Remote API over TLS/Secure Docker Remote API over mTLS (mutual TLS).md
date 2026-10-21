@@ -22,14 +22,14 @@ step ca certificate host1 \
   docker-api.pem \
   docker-api-key.pem \
   --san host1 \
-  --san 192.0.2.10
+  --san 192.0.2.50
 ```
 ### For the uptime monitor
 ```
-step ca certificate "host1_192.168.100.150" \
+step ca certificate "host1_192.0.2.50" \
   cert.pem \
   key.pem \
-  --san 192.0.2.10
+  --san 192.0.2.50
 ```
 ### remove password from key files (uptime doesn't have a way to add the password that I know of):
 ```
@@ -38,10 +38,10 @@ step ca certificate "host1_192.168.100.150" \
 ```
 ### test from the cert dir on uptime kuma (optional)
 ```
-curl --cert data/docker-tls/192.0.2.10/cert.pem \
-     --key  data/docker-tls/192.0.2.10/key.pem \
-     --cacert data/docker-tls/192.0.2.10/ca.pem \
-     https://192.0.2.10:2376/version
+curl --cert data/docker-tls/192.0.2.50/cert.pem \
+     --key  data/docker-tls/192.0.2.50/key.pem \
+     --cacert data/docker-tls/192.0.2.50/ca.pem \
+     https://192.0.2.50:2376/version
 ```
 
 ### pull the certs from step-ca (all in their own dirs)
@@ -50,27 +50,27 @@ curl --cert data/docker-tls/192.0.2.10/cert.pem \
 
 ```
 docker host keys:
-scp -i ~/.ssh/arch root@192.0.2.10:/etc/step/certs/dockerRemoteAPI/docker-hosts/host1/docker-api.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/host1/
+scp -i ~/.ssh/arch root@192.0.2.22:/etc/step/certs/dockerRemoteAPI/docker-hosts/host1/docker-api.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/host1/
 docker-api.pem
-scp -i ~/.ssh/arch root@192.0.2.10:/etc/step/certs/dockerRemoteAPI/docker-hosts/host1/docker-api-key.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/host1/
+scp -i ~/.ssh/arch root@192.0.2.22:/etc/step/certs/dockerRemoteAPI/docker-hosts/host1/docker-api-key.pem ~/certs/step-ca/dockerRemoteAPI/docker-hosts/host1/
 docker-api-key.pem
 
 uptime-kuma keys for this particular host:
-scp -i ~/.ssh/arch root@192.0.2.10:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.10/ca-bundle.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/
-scp -i ~/.ssh/arch root@192.0.2.10:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.10/cert.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/
-scp -i ~/.ssh/arch root@192.0.2.10:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.10/key.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/
+scp -i ~/.ssh/arch root@192.0.2.22:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.50/ca-bundle.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.50/
+scp -i ~/.ssh/arch root@192.0.2.22:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.50/cert.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.50/
+scp -i ~/.ssh/arch root@192.0.2.22:/etc/step/certs/dockerRemoteAPI/uptime-kuma/192.0.2.50/key.pem ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.50/
 ```
 
 ### push host keys to the appropriate docker host (may need to create the certs dir)
 ```
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/ca-bundle.pem user@192.0.2.10:~/etc/docker/certs/
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/docker-api.pem user@192.0.2.10:~/etc/docker/certs/
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/docker-api-key.pem user@192.0.2.10:~/etc/docker/certs/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/ca-bundle.pem user@192.0.2.50:~/etc/docker/certs/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/docker-api.pem user@192.0.2.50:~/etc/docker/certs/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/docker-api-key.pem user@192.0.2.50:~/etc/docker/certs/
 ```
 #### Add the following to: /etc/docker/daemon.json on docker host
 ```
 {
-  "hosts": ["unix:///var/run/docker.sock", "tcp://192.0.2.10:2376"],
+  "hosts": ["unix:///var/run/docker.sock", "tcp://192.0.2.50:2376"],
   "tls": true,
   "tlsverify": true,
   "tlscacert": "/etc/docker/certs/ca-bundle.pem",
@@ -78,11 +78,11 @@ scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/docker-hosts/svr2/docker-api-
   "tlskey": "/etc/docker/certs/docker-api-key.pem"
 }
 ```
-then to uptime-kuma dir @ /path/to/uptime-kuma/docker-tls/192.0.2.10/<here>
+then to uptime-kuma dir @ /path/to/uptime-kuma/docker-tls/192.0.2.50/<here>
 ```
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/key.pem user@192.0.2.10:~/docker/uptime-kuma/docker-tls/192.0.2.10/
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/cert.pem user@192.0.2.10:~/docker/uptime-kuma/docker-tls/192.0.2.10/
-scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.10/ca-bundle.pem user@192.0.2.10:~/uptime-kuma/docker-tls/192.0.2.10/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.50/key.pem user@192.0.2.110:~/docker/uptime-kuma/docker-tls/192.0.2.50/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.50/cert.pem user@192.0.2.110:~/docker/uptime-kuma/docker-tls/192.0.2.50/
+scp -i ~/.ssh/arch ~/certs/step-ca/dockerRemoteAPI/uptime-kuma/192.0.2.50/ca-bundle.pem user@192.0.2.110:~/uptime-kuma/docker-tls/192.0.2.50/
 ```
 >[!IMPORTANT]
 > be sure you follow the naming conventions used by uptime-kuma for the certs on the monitor side of this.
